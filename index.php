@@ -68,43 +68,46 @@
                     <img src="upload.png" width="50" height="50">
                     <span class="uk-text-middle uk-margin-left">Upload</span>
                 </div>
-                
 
-<form action="?upload" method="post" enctype="multipart/form-data">
-  <div class="form-group">
-    <label for="file"></label>
-    <input type="file" name="file" class="form-control-file" id="file">
-  </div>
-  <?php
-    if(isset($_FILES['file']) && !isset($uf['success'])){
-        echo '
-        <div class="uk-alert-danger" uk-alert>
-            <a class="uk-alert-close" uk-close></a>
-            <p>An error occured while uploading!</p>
-        </div>
-        <br>';
-    }
-  ?>
-  <button class="btn btn-success uk-button  uk-button-default" title="Upload">Upload File</button>
-</form>
+                <div class="uk-width-1-2" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p>Max upload size of 2MB</p>
+                </div>
+                <form action="?upload" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="file"></label>
+                        <input type="file" name="file" class="form-control-file" id="file">
+                    </div>
+                    <?php
+                        if(isset($_FILES['file']) && !isset($uf['success'])){
+                            echo '
+                            <div class="uk-alert-danger" uk-alert>
+                                <a class="uk-alert-close" uk-close></a>
+                                <p>An error occured while uploading!</p>
+                            </div>
+                            <br>';
+                        }
+                    ?>
+                    <button class="btn btn-success uk-button  uk-button-default" title="Upload">Upload File</button>
+                </form>
             </div>
         </div>
         <div class="uk-background-cover uk-background-fixed uk-section">
-    <div class="uk-container">
-    <div>
-        <img src="logo.png" width="50" height="50">
-        <span class="uk-text-middle uk-margin-left">File Download</span>
-    </div>
-    <table class="uk-table">
-    <thead>
-        <tr>
-            <th>File Name</th>
-            <th>Download</th>
-            <th>Date Created</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
+            <div class="uk-container">
+                <div>
+                    <img src="logo.png" width="50" height="50">
+                    <span class="uk-text-middle uk-margin-left">File Download</span>
+                </div>
+                <table class="uk-table">
+                    <thead>
+                        <tr>
+                            <th>File Name</th>
+                            <th>Download</th>
+                            <th>Date Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
             $files = fetchFiles();
             if(!$files){
                 require 'pages/404.php';
@@ -121,12 +124,12 @@
                 ';
             }
         ?>
-        
-    </tbody>
-</table>
-    </div>
-</div>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </body>
 
-</html>
+    </html>
