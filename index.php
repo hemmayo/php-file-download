@@ -25,10 +25,10 @@
             echo "<a href='?download&file=".$temp_name."'>Download</a><br>";
         }
     }
-    elseif(isset($_GET['upload'])){
+    elseif(isset($_GET['upload']) && isset($_FILES['file'])){
         $uf = uploadFileController();
-        if($uf){
-            echo 'Uploaded';
+        if(isset($uf['success'])){
+            header('Location: ./');
         }
     }
 ?>
@@ -75,6 +75,16 @@
     <label for="file"></label>
     <input type="file" name="file" class="form-control-file" id="file">
   </div>
+  <?php
+    if(isset($_FILES['file']) && !isset($uf['success'])){
+        echo '
+        <div class="uk-alert-danger" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p>An error occured while uploading!</p>
+        </div>
+        <br>';
+    }
+  ?>
   <button class="btn btn-success uk-button  uk-button-default" title="Upload">Upload File</button>
 </form>
             </div>

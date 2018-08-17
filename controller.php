@@ -158,6 +158,38 @@
         return false;
     }
 
+function file_upload_max_size() {
+  static $max_size = -1;
+
+  if ($max_size < 0) {
+    // Start with post_max_size.
+    $post_max_size = parse_size(ini_get('post_max_size'));
+    if ($post_max_size > 0) {
+      $max_size = $post_max_size;
+    }
+
+    // If upload_max_size is less, then reduce. Except if upload_max_size is
+    // zero, which indicates no limit.
+    $upload_max = parse_size(ini_get('upload_max_filesize'));
+    if ($upload_max > 0 && $upload_max < $max_size) {
+      $max_size = $upload_max;
+    }
+  }
+  return $max_size;
+}
+
+function parse_size($size) {
+  $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+  $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+  if ($unit) {
+    // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+    return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+  }
+  else {
+    return round($size);
+  }
+}
+
     function uploadFileController(){
         $errors = [];
         $valid = true; 
@@ -168,6 +200,10 @@
             $valid = false;
             $errors[] = "Upload a file!";
         }
+        if($_FILES['file']['size'] > file_upload_max_size()){
+            $valid = false;
+            $errors[] = "Exceeded file upload limit!";
+        }
         // if (empty($_POST['title'])) {
         //     $valid = false;
         //     $errors[] = "Title field is required";
@@ -175,12 +211,12 @@
         
         $response = ["errors" => $errors];
         if($valid == true){
-            $filename = basename($_FILES["file"]["name"]);
-            $file_name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename);
+            $filename = str_replace(' ', '-', basename($_FILES["file"]["name"]));
+            $file_name = pathinfo($filename, PATHINFO_FILENAME);
             $file_type =  strtolower(pathinfo($filename, PATHINFO_EXTENSION));
             $file_size = $_FILES["file"]["size"];
             $uploaded_file_name = $_FILES["file"]["tmp_name"];
-            $destination = time().$file_name;
+            $destination = $file_name.time();
             $mf = move_uploaded_file($uploaded_file_name, 'uploads/'.$destination);
             if($mf){
                 $data = [
@@ -192,6 +228,7 @@
                 if(addFile($data)){
                     $success = true;
                     $response = ["success" => $success];
+                    return $response;
                 }
             }
         }
