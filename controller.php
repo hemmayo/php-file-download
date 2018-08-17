@@ -122,7 +122,7 @@
     }
 
     function fetchFiles(){
-        $query = DB::table('files');
+        $query = DB::table('files')->orderBy('id', 'DESC');
         $data = $query->get();
         if($data){
             return $data;
@@ -133,7 +133,7 @@
     function createTempFile($file_id = ''){
         $file = fetchFile($file_id);
         if($file){
-            $temp_name = md5(time()).'-'.$file->name;
+            $temp_name = md5(session_id().rand(10, 400).md5(time())).'-'.$file->name;
             $expire_at = time()+1000;
             $data = [
                 "file_id" => $file_id,
@@ -143,6 +143,56 @@
             $insertId = DB::table('temp_files')->insert($data);
             if ($insertId) {
                 return ["name"=> $temp_name, "expire_at" => $expire_at];
+            }
+        }
+        return false;
+    }
+    function addFile($data=[])
+    {   
+        if(!empty($data)){
+            $insertId = DB::table('files')->insert($data);
+            if ($insertId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function uploadFileController(){
+        $errors = [];
+        $valid = true; 
+        $success = false;
+        $response = [];
+        if (empty($_FILES['file']['tmp_name']) || !is_uploaded_file($_FILES['file']['tmp_name']))
+        {
+            $valid = false;
+            $errors[] = "Upload a file!";
+        }
+        // if (empty($_POST['title'])) {
+        //     $valid = false;
+        //     $errors[] = "Title field is required";
+        // }
+        
+        $response = ["errors" => $errors];
+        if($valid == true){
+            $filename = basename($_FILES["file"]["name"]);
+            $file_name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename);
+            $file_type =  strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            $file_size = $_FILES["file"]["size"];
+            $uploaded_file_name = $_FILES["file"]["tmp_name"];
+            $destination = time().$file_name;
+            $mf = move_uploaded_file($uploaded_file_name, 'uploads/'.$destination);
+            if($mf){
+                $data = [
+                    "name" => $file_name,
+                    "type" => $file_type,
+                    "size" => $file_size,
+                    "location" => $destination,
+                ];
+                if(addFile($data)){
+                    $success = true;
+                    $response = ["success" => $success];
+                }
             }
         }
         return false;
