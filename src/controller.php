@@ -1,6 +1,6 @@
 <?php
     session_start();
-    require '../vendor/autoload.php';
+    require $_SERVER['DOCUMENT_ROOT'].'/vendor/autoload.php';
 
     function set_env(){
         $env = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT'].'/.env'));
