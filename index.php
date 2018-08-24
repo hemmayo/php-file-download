@@ -31,6 +31,7 @@
             header('Location: ./');
         }
     }
+    
 ?>
 
 
@@ -110,7 +111,7 @@
                         <?php
             $files = fetchFiles();
             if(!$files){
-                require 'pages/404.php';
+                // require 'pages/404.php';
             }
             foreach($files as $file){
                 $temp_file= createTempFile($file->id);
