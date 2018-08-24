@@ -3,5 +3,4 @@
         "monolog/monolog": "1.0.*",
         "usmanhalalit/pixie": "2.*@dev"
     }
-    
 }

@@ -1,6 +1,6 @@
 <?php
-    require 'vendor/autoload.php';
-    require 'controller.php';
+    require 'src/controller.php';
+
     if(isset($_GET['download'])){
         if (isset($_GET['file']) && basename($_GET['file']) == $_GET['file']) {
             $filename = $_GET['file'];
@@ -66,7 +66,7 @@
         <div class="uk-background-cover uk-background-fixed uk-section">
             <div class="uk-container">
                 <div>
-                    <img src="upload.png" width="50" height="50">
+                    <img src="img/upload.png" width="50" height="50">
                     <span class="uk-text-middle uk-margin-left">Upload</span>
                 </div>
 
@@ -96,7 +96,7 @@
         <div class="uk-background-cover uk-background-fixed uk-section">
             <div class="uk-container">
                 <div>
-                    <img src="logo.png" width="50" height="50">
+                    <img src="img/logo.png" width="50" height="50">
                     <span class="uk-text-middle uk-margin-left">File Download</span>
                 </div>
                 <table class="uk-table">
